@@ -7,10 +7,7 @@ export const UserCard = React.memo(({item, navigation}) => {
       style={styles.userCard}
       activeOpacity={1}
       onPress={() => navigation.navigate('Chats', {item})}>
-      <Image
-        source={require('../../assets/images/img15.jpg')}
-        style={styles.image}
-      />
+      <Image source={item?.img} style={styles.image} />
       <View style={styles.userInfo}>
         <Text style={styles.username}>{item?.name}</Text>
         <Text style={styles.message}>Hy there! How are you?</Text>

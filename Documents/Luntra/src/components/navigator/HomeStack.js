@@ -8,6 +8,11 @@ const HomeStack = () => {
       screenOptions={{headerShown: false}}>
       <Stack.Screen name="HomePage" component={screens.HomePage} />
       <Stack.Screen name="UserDetails" component={screens.UserDetails} />
+      <Stack.Screen
+        name="ViewImage"
+        component={screens.ViewImage}
+        options={{animation: 'fade'}}
+      />
     </Stack.Navigator>
   );
 };

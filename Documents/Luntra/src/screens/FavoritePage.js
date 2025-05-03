@@ -3,6 +3,7 @@ import React, {useCallback, useState} from 'react';
 import {useSelector} from 'react-redux';
 import {SmallProfilesCard} from '../components/customs/SmallProfilesCard';
 import {FlatList} from 'react-native-gesture-handler';
+import {DATA} from '../components/libs/config';
 
 export default function FavoritePage({navigation}) {
   const data = useSelector(state => state.favorite);
@@ -19,7 +20,11 @@ export default function FavoritePage({navigation}) {
   ];
   const renderItem = useCallback(
     ({item, index}) => (
-      <SmallProfilesCard navigation={navigation} item={item} />
+      <SmallProfilesCard
+        navigation={navigation}
+        item={item}
+        key={`smallProfileCards - ${index}`}
+      />
     ),
     [navigation],
   );
@@ -33,6 +38,7 @@ export default function FavoritePage({navigation}) {
           data={exploreTopics}
           showsHorizontalScrollIndicator={false}
           horizontal
+          keyExtractor={item => `key - ${item}`}
           contentContainerStyle={styles.containerStyle}
           renderItem={({item, index}) => {
             return (
@@ -56,7 +62,7 @@ export default function FavoritePage({navigation}) {
       <View>
         <FlatList
           data={data}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item, index) => item?.name}
           showsVerticalScrollIndicator={false}
           numColumns={2}
           removeClippedSubviews={true}
@@ -77,6 +83,7 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 14,
     paddingTop: 10,
+    marginTop: 30,
   },
   chat: {
     fontSize: 20,

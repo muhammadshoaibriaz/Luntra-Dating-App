@@ -2,7 +2,7 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {COLOR} from '../constants/color';
-export default function Header() {
+export default function Header({handleFilter}) {
   return (
     <View style={styles.header}>
       <View style={styles.headerLeft}>
@@ -12,8 +12,8 @@ export default function Header() {
           <Text style={styles.locationText}>Khanewal Punjab, Pakistan</Text>
         </View>
       </View>
-      <TouchableOpacity style={styles.menuBtn}>
-        <Icon name="bars" size={18} color={COLOR.PRIMARY} />
+      <TouchableOpacity style={styles.menuBtn} onPress={handleFilter}>
+        <Icon name="sliders-h" size={18} color={COLOR.PRIMARY} />
       </TouchableOpacity>
     </View>
   );
@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginTop: 30,
   },
   headerLeft: {
     flex: 1,

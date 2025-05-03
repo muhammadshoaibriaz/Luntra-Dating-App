@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useCallback} from 'react';
 import {
   Animated,
   Dimensions,
@@ -7,42 +7,50 @@ import {
   View,
 } from 'react-native';
 import {ProfileCard} from './ProfileCard';
+import {DATA} from '../libs/config';
 
 const {width} = Dimensions.get('window');
 const offset = width / 5;
 
 const SwipeCard = ({navigation}) => {
   const [data, setData] = useState([]);
+  const [visibleItems, setVisibleItems] = useState([]); // The items that are currently visible
+
   const opacity = useRef(new Animated.Value(0)).current;
   const containerRef = useRef(null);
 
-  const fetchRandomUser = async () => {
-    try {
-      const res = await fetch('https://randomuser.me/api/?results=5');
-      const json = await res.json();
-      return json.results;
-    } catch (error) {
-      console.log('Error fetching user:', error);
-      return null;
-    }
-  };
-
-  const removeItem = async swipedItemIndex => {
-    setData(prev => prev.slice(1));
-    if (data.length <= 10) {
-      await fetchRandomUser().then(newUsers => {
-        if (newUsers) setData(prev => [...prev, ...newUsers]);
-      });
-    }
-  };
-
   useEffect(() => {
-    const preload = async () => {
-      const users = await fetchRandomUser();
-      setData(users);
-    };
-    preload();
+    preloadData();
   }, []);
+
+  // Shuffle an array randomly
+  const shuffleArray = array => {
+    let shuffled = array.slice();
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
+
+  const preloadData = () => {
+    const shuffledData = shuffleArray(DATA); // Shuffle the data array
+    setData(shuffledData); // Set the shuffled data to the state
+    setVisibleItems(shuffledData.slice(0, 3)); // Pick the first 3 items to display
+  };
+
+  // Function to handle when a user swipes an item
+  const removeItem = () => {
+    // Remove the first item and add the next one from the data stack
+    setVisibleItems(prev => {
+      // Check if we have more items in the data to add
+      const nextItems = data.slice(
+        visibleItems.length,
+        visibleItems.length + 3,
+      ); // Next 3 items
+      return [...prev.slice(1), ...nextItems]; // Remove the first item and add the next items
+    });
+  };
 
   return (
     <View style={{flex: 1}}>
@@ -51,9 +59,9 @@ const SwipeCard = ({navigation}) => {
         ref={containerRef}
       />
       <View style={styles.container}>
-        {data.slice(0, 3).map((item, index) => (
+        {visibleItems?.map((item, index) => (
           <Card
-            key={item.login.uuid}
+            key={`index - ${index}`}
             item={item}
             i={index}
             removeItem={removeItem}
@@ -121,13 +129,13 @@ const Card = ({data, i, item, removeItem, setAction, navigation}) => {
     }),
   ).current;
 
-  const swipeOut = () => {
+  const swipeOut = useCallback(() => {
     Animated.timing(pan, {
       toValue: {x: -width * 2, y: 0},
       useNativeDriver: true,
       duration: 250,
     }).start(() => removeItem(i));
-  };
+  }, []);
 
   return (
     <Animated.View

@@ -12,49 +12,21 @@ import {COLOR} from '../components/constants/color';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import axios from 'axios';
 import {UserCard} from '../components/customs/UserCard';
+import {DATA} from '../components/libs/config';
 
-export default function ChatPage({navigation, route}) {
-  // const {isUserExist} = route?.params?.data;
-  // console.log(isUserExist);
-  const [story, setStory] = useState([]);
-  const [users, setUsers] = useState([]);
-  useEffect(() => {
-    getStories();
-    getUser();
-  }, []);
-
-  const getStories = async () => {
-    try {
-      const output = await axios.get('https://randomuser.me/api/?results=25');
-      setStory(output?.data?.results);
-    } catch (error) {
-      console.log('Error while getting stories');
-    }
-  };
-
-  const getUser = async () => {
-    const results = await axios.get(
-      `http://192.168.126.21:3000/api/v1/getUser`,
-    );
-    // console.log(results);
-    setUsers(results?.data);
-  };
-  // Header including "Chat" title and Stories list
+export default function ChatPage({navigation}) {
   const renderHeader = () => (
     <View style={{flex: 1}}>
       <FlatList
         horizontal
-        data={story}
+        data={DATA}
         keyExtractor={item => item?.login?.uuid || item?.id}
         contentContainerStyle={styles.storyWrapper}
         renderItem={({item}) => <Story item={item} />}
         ListHeaderComponent={
-          <TouchableOpacity
-            style={styles.story}
-            activeOpacity={0.8}
-            onPress={getUser}>
+          <TouchableOpacity style={styles.story} activeOpacity={0.8}>
             <Image
-              source={require('../assets/images/story.jpg')}
+              source={require('../assets/images/avatar_3.jpg')}
               style={styles.image}
               resizeMode="cover"
             />
@@ -80,12 +52,12 @@ export default function ChatPage({navigation, route}) {
         <Text style={styles.chat}>Chat</Text>
       </View>
       <FlatList
-        data={users?.users}
-        keyExtractor={item => item?._id}
+        data={DATA}
+        keyExtractor={item => item?.name}
         ListHeaderComponent={renderHeader}
         contentContainerStyle={{paddingBottom: 60}}
         renderItem={({item, index}) => {
-          return <UserCard navigation={navigation} item={item} />;
+          return <UserCard navigation={navigation} item={item} key={index} />;
         }}
         showsVerticalScrollIndicator={false}
       />
@@ -100,6 +72,7 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 14,
     paddingVertical: 10,
+    marginTop: 30,
   },
   chat: {
     fontSize: 20,

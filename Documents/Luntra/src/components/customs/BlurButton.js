@@ -6,11 +6,7 @@ import {Text} from 'react-native';
 export const BlurButton = React.memo(({text}) => {
   return (
     <View style={styles.blurButtonWrapper}>
-      <BlurView
-        blurAmount={10}
-        style={styles.blur}
-        // reducedTransparencyFallbackColor="white"
-        blurType="light">
+      <BlurView blurAmount={10} style={styles.blur} blurType="light">
         <Text style={styles.kmText}>{text} away</Text>
       </BlurView>
     </View>
@@ -22,10 +18,14 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderRadius: 50,
     position: 'relative',
+    borderWidth: 1.3,
+    borderColor: '#ddd',
   },
   blur: {
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    width: 100,
+    height: 34,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   kmText: {
     fontWeight: '900',

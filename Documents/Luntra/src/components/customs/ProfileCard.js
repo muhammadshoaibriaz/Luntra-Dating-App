@@ -6,13 +6,12 @@ import {
   Dimensions,
 } from 'react-native';
 import React from 'react';
-import Feather from 'react-native-vector-icons/Feather';
+import FastImage from 'react-native-fast-image';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import {IconButton} from './IconButton';
 import {COLOR} from '../constants/color';
-import {Image} from 'react-native';
 
 import {BlurButton} from './BlurButton';
 import {useDispatch} from 'react-redux';
@@ -38,16 +37,26 @@ export const ProfileCard = React.memo(({item, onClose, navigation}) => {
         <View style={styles.imageWrapper}>
           <View style={styles.kmAway}>
             <BlurButton text={'12.5km'} />
-            <IconButton style={{}}>
-              <Feather name="more-vertical" size={22} color="#fff" />
+            <IconButton
+              style={{
+                borderColor: '#0000ff',
+                borderWidth: 2,
+                elevation: 10,
+                shadowColor: COLOR.PRIMARY,
+              }}>
+              <Text style={{color: '#fff', fontSize: 10}}>85%</Text>
             </IconButton>
           </View>
-          <Image
-            source={{uri: item?.picture?.large}}
-            style={styles.userImage}
-          />
+          <FastImage source={item?.img} style={styles.userImage} />
           <View style={styles.userInfo}>
-            <Text style={styles.userName}>{item?.name?.first}</Text>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text style={styles.userName}>{item?.name}</Text>
+              <FastImage
+                source={require('../../assets/images/verified.png')}
+                style={{width: 20, height: 20, resizeMode: 'contain', left: 4}}
+                tintColor={'gold'}
+              />
+            </View>
             <Text style={styles.cityText}>Khanewal, Pakistan</Text>
           </View>
         </View>

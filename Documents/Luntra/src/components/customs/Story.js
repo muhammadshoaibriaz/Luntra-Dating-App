@@ -1,5 +1,6 @@
-import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import React from 'react';
+import FastImage from 'react-native-fast-image';
 import {COLOR} from '../constants/color';
 export const Story = React.memo(({item}) => {
   return (
@@ -9,10 +10,7 @@ export const Story = React.memo(({item}) => {
         onPress={() => {}}
         activeOpacity={1}>
         <View style={styles.imageWrapper}>
-          <Image
-            source={require('../../assets/images/user.jpeg')}
-            style={styles.image}
-          />
+          <FastImage source={item?.img} style={styles.image} />
         </View>
         <Text numberOfLines={1} style={styles.text}>
           Shabii🥀

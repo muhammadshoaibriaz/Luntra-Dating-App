@@ -10,31 +10,45 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
 import {IconButton} from '../components/customs/IconButton';
 import {BlurButton} from '../components/customs/BlurButton';
 import LinearGradient from 'react-native-linear-gradient';
 import {COLOR} from '../components/constants/color';
 import {Chip} from 'react-native-elements';
 
+import {addFavorite} from '../components/redux/slices/favoriteSlice';
+import {DATA} from '../components/libs/config';
 const {width} = Dimensions.get('screen');
 const ITEM_WIDTH = width / 3.5;
 
 const InterestChips = React.memo(({interests}) => (
   <View style={styles.chipWrapper}>
-    {interests.map((interest, index) => (
-      <Chip
-        key={`chip-${index}`}
-        title={interest.title}
-        icon={{
-          name: interest.iconUnselected,
-          type: 'material',
-          size: 20,
-        }}
-        buttonStyle={styles.chipStyle}
-        titleStyle={styles.chipTitle}
-      />
-    ))}
+    <FlatList
+      data={interests}
+      keyExtractor={(item, index) => index.toString()}
+      contentContainerStyle={{flexDirection: 'row', flexWrap: 'wrap'}}
+      renderItem={(interest, index) => {
+        console.log(interest);
+        return (
+          <Chip
+            key={`chip-${index}`}
+            title={interest?.item?.title}
+            icon={{
+              name: interest?.item?.iconUnselected,
+              type: 'material',
+              size: 20,
+            }}
+            buttonStyle={styles.chipStyle}
+            titleStyle={styles.chipTitle}
+          />
+        );
+      }}
+    />
   </View>
 ));
 
@@ -76,7 +90,7 @@ export default function UserDetails({route, navigation}) {
     <View style={styles.container}>
       <StatusBar
         backgroundColor="transparent"
-        // translucent={true}
+        translucent={true}
         barStyle="light-content"
         animated={true}
       />
@@ -84,7 +98,7 @@ export default function UserDetails({route, navigation}) {
       {/* Top Section */}
       <View style={styles.header}>
         <IconButton
-          style={styles.iconButton}
+          style={styles.iconButtons}
           onPress={() => navigation.goBack()}>
           <MaterialIcons name="arrow-back" size={24} color="#fff" />
         </IconButton>
@@ -92,28 +106,21 @@ export default function UserDetails({route, navigation}) {
       </View>
 
       {/* Scrollable Content */}
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Profile Image with Gradient */}
-        {/* <TouchableOpacity
-          style={styles.imageWrapper}
-          onPress={() => navigation.navigate('ViewImage', {item})}> */}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{paddingBottom: 30}}>
         <LinearGradient
           style={styles.imageWrapper}
           colors={['transparent', COLOR.SECONDARY]}>
-          <Image source={{uri: item?.picture?.large}} style={styles.image} />
+          <Image source={item?.img} style={styles.image} />
         </LinearGradient>
-        {/* </TouchableOpacity> */}
 
         {/* User Details */}
         <View style={styles.userDetails}>
           <View style={styles.userInfo}>
             <View style={{flex: 1}}>
-              <Text style={styles.username}>
-                {`${item?.name?.first} ${item?.name?.last}`}
-              </Text>
-              <Text style={styles.userLocation}>
-                {item?.location?.city?.toUpperCase() || ''}
-              </Text>
+              <Text style={styles.username}>Muhammad Shoaib</Text>
+              <Text style={styles.userLocation}>Khanewal</Text>
             </View>
             <IconButton style={{backgroundColor: COLOR.PRIMARY}}>
               <MaterialIcons name="message" size={20} color="#fff" />
@@ -129,9 +136,8 @@ export default function UserDetails({route, navigation}) {
 
           <Text style={styles.description}>Interests</Text>
           <InterestChips interests={interests} />
-
           <Text style={[styles.description, {marginTop: 20}]}>
-            {item?.name?.first}'s Info
+            Shabii🥀's Info
           </Text>
           <View style={styles.info}>
             <Text>Age</Text>
@@ -150,7 +156,7 @@ export default function UserDetails({route, navigation}) {
         {/* Gallery */}
         <Text style={[styles.description, styles.galleryLabel]}>Gallery</Text>
         <FlatList
-          data={[1, 2, 3, 4]}
+          data={DATA}
           horizontal
           keyExtractor={(_, index) => `img-${index}`}
           showsHorizontalScrollIndicator={false}
@@ -160,14 +166,27 @@ export default function UserDetails({route, navigation}) {
               key={`image gallery ${index}`}
               activeOpacity={0.8}
               onPress={() => navigation.navigate('ViewImage')}>
-              <Image
-                source={require('../assets/images/user.jpeg')}
-                style={styles.galleryImage}
-              />
+              <Image source={item?.img} style={styles.galleryImage} />
             </TouchableOpacity>
           )}
         />
       </ScrollView>
+      <View style={styles.buttonWrapper}>
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={() => navigation.goBack()}>
+          <AntDesign name="close" size={30} color={COLOR.PRIMARY} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.iconButton, {backgroundColor: COLOR.PRIMARY}]}
+          onPress={() => addFavorite(item)}>
+          <Ionicons name="heart" size={30} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.iconButton, {backgroundColor: 'gold'}]}>
+          <AntDesign name="star" size={30} color="black" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -188,7 +207,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  iconButton: {
+  iconButtons: {
     backgroundColor: '#ffffff30',
   },
   imageWrapper: {
@@ -222,6 +241,8 @@ const styles = StyleSheet.create({
   userLocation: {
     color: COLOR.GRAY,
     textTransform: 'uppercase',
+    fontSize: 12,
+    marginTop: 4,
   },
   description: {
     fontWeight: '700',
@@ -259,5 +280,27 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: 12,
     marginRight: 6,
+  },
+  iconButton: {
+    borderRadius: 50,
+    width: 50,
+    height: 50,
+    elevation: 30,
+    shadowColor: COLOR.PRIMARY,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '50%',
+    alignSelf: 'center',
+    backgroundColor: '#111',
+    padding: 6,
+    borderRadius: 60,
+    position: 'absolute',
+    bottom: 10,
   },
 });

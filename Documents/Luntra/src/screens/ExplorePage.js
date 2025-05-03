@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet, Image, StatusBar} from 'react-native';
 import React, {useRef} from 'react';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {COLOR} from '../components/constants/color';
@@ -161,6 +161,7 @@ export default function ExplorePage() {
   );
   return (
     <View style={styles.container}>
+      <StatusBar backgroundColor={'transparent'} />
       <MapView
         ref={mapRef}
         provider={PROVIDER_GOOGLE}
@@ -220,8 +221,6 @@ const styles = StyleSheet.create({
   floatingCard: {
     position: 'absolute',
     bottom: 80,
-    left: 16,
-    right: 16,
     backgroundColor: '#fff',
     flexDirection: 'row',
     alignItems: 'center',
@@ -232,6 +231,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowOffset: {width: 0, height: 3},
     shadowRadius: 5,
+    marginHorizontal: 16,
   },
   profileImage: {
     width: 60,

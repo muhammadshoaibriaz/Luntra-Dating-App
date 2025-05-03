@@ -25,11 +25,7 @@ export const SmallProfilesCard = React.memo(({item, navigation}) => {
           <Text style={styles.matchText}>90% Match</Text>
         </View>
         <View style={styles.active} />
-        <Image
-          // source={require('../../assets/images/tolga.jpg')}
-          source={{uri: item?.picture?.large}}
-          style={styles.userImage}
-        />
+        <Image source={item?.img} style={styles.userImage} />
         <View style={styles.userInfo}>
           <BlurButton text={'12.8km'} />
           <Text style={styles.userName}>Shabii🥀</Text>

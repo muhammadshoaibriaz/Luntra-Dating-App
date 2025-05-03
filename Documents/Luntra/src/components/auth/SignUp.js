@@ -6,21 +6,20 @@ import {
   View,
   TextInput,
   Alert,
-  Touchable,
 } from 'react-native';
 import {CheckBox} from 'react-native-elements';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import axios from 'axios';
-import {BackHandler} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Button} from '../customs/Button';
 import {COLOR} from '../constants/color';
 
-export default function Login({navigation}) {
+export default function SignUp({navigation}) {
   // State Variables
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [checked, setChecked] = useState(false);
   const handlePasswordInput = value => setPassword(value);
 
   const handleLogin = async () => {
@@ -66,11 +65,21 @@ export default function Login({navigation}) {
   return (
     <View style={styles.container}>
       {/* Welcome Text */}
-      <Text style={styles.heading}>Sign In</Text>
+      <Text style={styles.heading}>Create Account</Text>
       <Text style={styles.subHeading}>
-        Hi! Welcome back, you've been missed
+        Fill your information below or register with your social account.
       </Text>
 
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Name</Text>
+        <TextInput
+          value={name}
+          placeholder="Shabii"
+          placeholderTextColor="#888"
+          style={styles.input}
+          onChangeText={t => setName(t)}
+        />
+      </View>
       {/* Email Input */}
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Email</Text>
@@ -97,15 +106,36 @@ export default function Login({navigation}) {
       </View>
 
       {/* Forgot Password */}
-      <TouchableOpacity style={styles.forgotButton}>
-        <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-      </TouchableOpacity>
+      <View style={styles.forgotButton}>
+        <CheckBox
+          checked={checked}
+          checkedColor={COLOR.PRIMARY}
+          onPress={() => setChecked(!checked)}
+          containerStyle={{
+            width: 30,
+            height: 30,
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 0,
+          }}
+        />
+        <Text style={styles.forgotPasswordText}>
+          Agree with{' '}
+          <Text style={{color: COLOR.PRIMARY, textDecorationLine: 'underline'}}>
+            Terms & Condition?
+          </Text>
+        </Text>
+      </View>
 
-      <Button title="Sign In" style={{width: '100%', marginTop: 20}} />
+      <Button
+        onPress={() => navigation.navigate('MPin')}
+        title="Sign Up"
+        style={{width: '100%', marginTop: 20}}
+      />
       {/* Continue with Social Media */}
       <View style={styles.signUpWith}>
         <View style={styles.bar} />
-        <Text style={[styles.text]}>or sign in with</Text>
+        <Text style={[styles.text]}>or sign up with</Text>
         <View style={styles.bar} />
       </View>
       <View style={styles.socialMediaContainer}>
@@ -120,7 +150,7 @@ export default function Login({navigation}) {
         </TouchableOpacity>
       </View>
       <Text style={styles.text}>
-        Don't have an account?
+        Already have an account?
         <TouchableOpacity>
           <Text
             style={{
@@ -129,7 +159,7 @@ export default function Login({navigation}) {
               color: COLOR.PRIMARY,
               textDecorationLine: 'underline',
             }}>
-            Sign up
+            Sign In
           </Text>
         </TouchableOpacity>
       </Text>
@@ -154,6 +184,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 30,
     opacity: 0.7,
+    textAlign: 'center',
+    width: '80%',
   },
   inputContainer: {
     marginTop: 10,
@@ -192,14 +224,12 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   forgotButton: {
-    alignSelf: 'flex-end',
-    marginVertical: 8,
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   forgotPasswordText: {
-    color: COLOR.PRIMARY,
     fontWeight: '600',
-    textDecorationStyle: 'solid',
-    textDecorationLine: 'underline',
   },
   signUpWith: {
     width: '80%',
@@ -209,6 +239,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   text: {
-    marginTop: 20,
+    marginTop: 14,
   },
 });

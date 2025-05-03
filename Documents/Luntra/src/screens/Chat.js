@@ -10,7 +10,7 @@ import {
   Image,
   StatusBar,
 } from 'react-native';
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useLayoutEffect} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLOR} from '../components/constants/color';
@@ -117,10 +117,11 @@ export default function Chat({route, navigation}) {
           />
         )}
         {item.video && (
-          <Text style={{color: '#999'}}>[Video message]</Text> // Optional: use a video player here
+          <Text style={{color: '#ddd'}}>[Video message]</Text> // Optional: use a video player here
         )}
         {item.text !== '' && (
           <Text
+            selectable
             style={[
               styles.messageText,
               item.fromMe ? styles.fromMeText : styles.fromOtherText,
@@ -146,21 +147,19 @@ export default function Chat({route, navigation}) {
 
   return (
     <View style={styles.container}>
+      {/* Header */}
       <StatusBar
-        translucent={false}
+        translucent={true}
         backgroundColor={COLOR.PRIMARY}
         barStyle={'light-content'}
+        animated={true}
       />
-      {/* Header */}
       <View style={styles.topHeader}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Icon name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
-          <Image
-            source={require('../assets/images/user.jpeg')}
-            style={styles.userImage}
-          />
+          <Image source={item?.img} style={styles.userImage} />
           <View style={styles.user}>
             <Text style={styles.headerTitle}>{item?.name || 'Shabiii'}</Text>
             <Text style={styles.online}>Online</Text>
@@ -220,12 +219,14 @@ export default function Chat({route, navigation}) {
           value={message}
           onChangeText={text => setMessage(text)}
           style={styles.input}
+          multiline
+          maxFontSizeMultiplier={12}
         />
+
         <MaterialCommunityIcon
           name="send-circle"
           size={50}
           color={COLOR.PRIMARY}
-          // onPress={handleSend}
           onPress={sendMessage}
         />
       </KeyboardAvoidingView>
@@ -255,21 +256,20 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   messageContainer: {
-    maxWidth: '75%',
-    padding: 10,
-    borderRadius: 8,
-    marginVertical: 4,
+    maxWidth: '86%',
+    padding: 8,
+    borderRadius: 12,
     flexDirection: 'row',
+    position: 'relative',
+    marginVertical: 2,
   },
   fromMe: {
     backgroundColor: COLOR.PRIMARY,
     alignSelf: 'flex-end',
-    borderTopRightRadius: 0,
   },
   fromOther: {
     backgroundColor: '#fff',
     alignSelf: 'flex-start',
-    borderTopLeftRadius: 0,
   },
   fromMeText: {
     color: '#fff',
@@ -279,11 +279,10 @@ const styles = StyleSheet.create({
   },
   messageText: {
     fontSize: 16,
-    marginBottom: 10,
   },
   inputContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     padding: 8,
     backgroundColor: '#fff',
   },
@@ -295,15 +294,12 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     marginRight: 10,
     fontSize: 16,
+    height: 'auto',
   },
-  sendButton: {
-    backgroundColor: '#075e54',
-    borderRadius: 25,
-    padding: 10,
-  },
+
   userImage: {
-    width: 34,
-    height: 34,
+    width: 40,
+    height: 40,
     borderRadius: 100,
     marginLeft: 8,
   },
@@ -319,6 +315,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: COLOR.PRIMARY,
+    marginTop: 30,
   },
   timeText: {
     fontSize: 10,
