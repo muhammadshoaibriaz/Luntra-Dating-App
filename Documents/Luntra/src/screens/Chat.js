@@ -8,9 +8,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
-  StatusBar,
 } from 'react-native';
-import React, {useState, useRef, useEffect, useLayoutEffect} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLOR} from '../components/constants/color';
@@ -148,12 +147,6 @@ export default function Chat({route, navigation}) {
   return (
     <View style={styles.container}>
       {/* Header */}
-      <StatusBar
-        translucent={true}
-        backgroundColor={COLOR.PRIMARY}
-        barStyle={'light-content'}
-        animated={true}
-      />
       <View style={styles.topHeader}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -222,12 +215,12 @@ export default function Chat({route, navigation}) {
           multiline
           maxFontSizeMultiplier={12}
         />
-
         <MaterialCommunityIcon
           name="send-circle"
           size={50}
           color={COLOR.PRIMARY}
           onPress={sendMessage}
+          style={{top: 5}}
         />
       </KeyboardAvoidingView>
     </View>
@@ -315,7 +308,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: COLOR.PRIMARY,
-    marginTop: 30,
+    paddingTop: 30,
   },
   timeText: {
     fontSize: 10,

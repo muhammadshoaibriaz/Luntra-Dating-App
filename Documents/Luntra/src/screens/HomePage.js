@@ -10,12 +10,12 @@ import {
   Dimensions,
   ScrollView,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import Header from '../components/customs/Header';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {COLOR} from '../components/constants/color';
 import {Story} from '../components/customs/Story';
-
+import FastImage from 'react-native-fast-image';
 import {useFocusEffect} from '@react-navigation/native';
 import {DATA} from '../components/libs/config';
 import CountryPicker from 'react-native-country-picker-modal';
@@ -27,30 +27,35 @@ const {width, height} = Dimensions.get('screen');
 const ITEM_HEIGHT = height - 240;
 const sliderWidth = width - 40;
 export default function HomePage({navigation}) {
-  const [depA, setDepA] = React.useState(false);
-  const [depB, setDepB] = React.useState(false);
   const [interest, setInterest] = useState(0);
   const [sortBy, setSortBy] = useState(0);
-  useFocusEffect(() => {
-    const backAction = () => {
-      Alert.alert(
-        'Hold on!',
-        'Are you sure you want to exit?',
-        [
-          {text: 'Cancel', onPress: () => null, style: 'cancel'},
-          {text: 'YES', onPress: () => BackHandler.exitApp()},
-        ],
-        {cancelable: false},
-      );
-      return true; // Prevent default back behavior
-    };
 
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction,
-    );
-    return () => backHandler.remove();
-  }, [depA, depB]);
+  // Inside your component
+  useFocusEffect(
+    useCallback(() => {
+      const backAction = () => {
+        Alert.alert(
+          'Hold on!',
+          'Are you sure you want to exit?',
+          [
+            {text: 'Cancel', onPress: () => null, style: 'cancel'},
+            {text: 'YES', onPress: () => BackHandler.exitApp()},
+          ],
+          {cancelable: false},
+        );
+        return true;
+      };
+
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        backAction,
+      );
+
+      return () => {
+        backHandler.remove(); // Cleanup on unmount
+      };
+    }, []), // Empty dependency array
+  );
 
   const [country, setCountry] = useState(null);
 
@@ -104,7 +109,7 @@ export default function HomePage({navigation}) {
           )}
           ListHeaderComponent={
             <TouchableOpacity style={styles.story} activeOpacity={0.8}>
-              <Image
+              <FastImage
                 source={require('../assets/images/avatar_2.jpg')}
                 style={styles.image}
                 resizeMode="cover"

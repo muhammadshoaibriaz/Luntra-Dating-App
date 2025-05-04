@@ -50,7 +50,7 @@ export default function ViewImage({navigation}) {
         )}
         renderItem={({item, index}) => {
           return (
-            <Animated.Image
+            <Animated.FastImage
               source={item.img}
               style={styles.image}
               resizeMode="cover"
@@ -67,7 +67,7 @@ export default function ViewImage({navigation}) {
           renderItem={({item, index}) => {
             return (
               <TouchableOpacity onPress={() => onPress(index)}>
-                <Animated.Image
+                <Animated.FastImage
                   source={item.img}
                   style={[
                     styles.smallImage,
